@@ -1,36 +1,28 @@
 package com.example.sudoku;
 
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
 public class SudokuGenerator {
-    int n=9; // number of columns/rows.
+    int n=9;
     int[][] mat = new int[n][n];
-    int s=3; // square root of N
-    int missingDigits; // No. Of missing digits
+    int s=3;
+    int missingDigits;
 
-    SudokuGenerator(int missingDigits)
-    {
+    SudokuGenerator(int missingDigits) {
         this.missingDigits=missingDigits;
         fillValues();
     }
 
-    public void fillValues()
-    {
+    public void fillValues() {
         fillDiagonal();
         fillRemaining(0, s);
         removeKDigits();
     }
 
-    void fillDiagonal()
-    {
+    void fillDiagonal() {
         for (int i=0; i<n; i=i+s)
             fillArea(i, i);
     }
 
-    // Returns false if given 3 x 3 block contains num.
-    boolean unUsedInBox(int rowStart, int colStart, int value)
-    {
+    boolean unUsedInBox(int rowStart, int colStart, int value) {
         for (int i = 0; i<s; i++)
             for (int j = 0; j<s; j++)
                 if (mat[rowStart+i][colStart+j]==value)
@@ -38,9 +30,7 @@ public class SudokuGenerator {
         return true;
     }
 
-    // wypełnienie obszaru 3x3;
-    void fillArea(int row,int col)
-    {
+    void fillArea(int row,int col) {
         int value;
         for (int i=0; i<s; i++) {
             for (int j=0; j<s; j++) {
@@ -53,40 +43,31 @@ public class SudokuGenerator {
         }
     }
 
-    // Random generator
-    int randomGenerator(int num)
-    {
+    int randomGenerator(int num) {
         return (int) Math.floor((Math.random()*num+1));
     }
 
-    // Check if safe to put in cell
-    boolean CheckIfSafe(int i,int j,int num)
-    {
+    boolean CheckIfSafe(int i,int j,int num) {
         return (unUsedInRow(i, num) &&
                 unUsedInCol(j, num) &&
                 unUsedInBox(i-i%s, j-j%s, num));
     }
 
-    // check in the row for existence
-    boolean unUsedInRow(int i,int num)
-    {
+    boolean unUsedInRow(int i,int num) {
         for (int j = 0; j<n; j++)
             if (mat[i][j] == num)
                 return false;
         return true;
     }
 
-    // check in the row for existence
-    boolean unUsedInCol(int j,int num)
-    {
+    boolean unUsedInCol(int j,int num) {
         for (int i = 0; i<n; i++)
             if (mat[i][j] == num)
                 return false;
         return true;
     }
 
-    boolean fillRemaining(int i, int j)
-    {
+    boolean fillRemaining(int i, int j) {
         if (j>=n && i<n-1) {
             i = i + 1;
             j = 0;
@@ -109,7 +90,6 @@ public class SudokuGenerator {
                     return true;
             }
         }
-
         for (int num = 1; num<=n; num++) {
             if (CheckIfSafe(i, j, num)) {
                 mat[i][j] = num;
@@ -141,9 +121,7 @@ public class SudokuGenerator {
     public int[] getSudoku() {
         int[] array = new int[81];
         for(int i = 0; i < n; i ++) {
-            for(int s = 0; s < n; s ++) {
-                array[(i * mat.length) + s] = mat[i][s];
-            }
+            System.arraycopy(mat[i], 0, array, (i * mat.length), n);
         }
         return array;
     }
